@@ -21,13 +21,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    # 关键点：指定工作目录，并使用 setup-gradle
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.2'
+        build-root-directory: ./MyApp # 明确告诉它入口在 MyApp
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      working-directory: ./MyApp # 确保在这个目录下执行
 
     - name: Build with Gradle
-      run: |
-        cd MyApp
-        gradle assembleDebug
+      run: ./gradlew assembleDebug
+      working-directory: ./MyApp # 必须在此目录下运行
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
